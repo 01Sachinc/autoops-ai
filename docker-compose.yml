@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: ./backend
+    container_name: autoops-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - MODEL_NAME=llama3
+    depends_on:
+      - ollama
+    networks:
+      - autoops-net
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: autoops-frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - autoops-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: autoops-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml
+    networks:
+      - autoops-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: autoops-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - autoops-net
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: autoops-node-exporter
+    ports:
+      - "9100:9100"
+    networks:
+      - autoops-net
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: autoops-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - autoops-net
+
+networks:
+  autoops-net:
+    driver: bridge
+
+volumes:
+  ollama_data:
