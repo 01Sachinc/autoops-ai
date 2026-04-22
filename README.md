@@ -70,4 +70,11 @@ Paste any log snippet into the **AI Log Analyzer** on the dashboard. The platfor
 - **Severity**: Criticality of the issue.
 
 ---
+## 👤 Contact
+
+**Sachin CS**  
+*DevSecOps Engineer*  
+📧 [cssachin83@gmail.com](mailto:cssachin83@gmail.com)  
+📞 +91 8496001030
+
 Built with ❤️ by Antigravity AI
